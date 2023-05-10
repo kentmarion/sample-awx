@@ -1,0 +1,21 @@
+---
+- hosts: all
+
+  tasks:
+  - name: Ansible Gather Facts - Get Service
+    ansible.windows.win_service_info:
+      name: {{service_name}}
+    register: wu_info
+
+  - name: Start Service if Stopped
+    ansible.windows.win_service:
+      name: "{{service_name}}"
+      state: started
+      force_dependent_services: true
+      failure_actions:
+        - type: restart
+        - type: run_command
+          delay_ms: 1800
+        - type: none
+      failure_command: powershell.exe -command "Stop-Process (Get-WMIObject win32_service | where {$_.name -eq '{{service_name}}'}).processID -Verb RunAs -Force"
+    when: wu_info.services.0.state != "started"

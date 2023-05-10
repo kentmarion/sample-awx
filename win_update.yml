@@ -1,40 +1,12 @@
 ---
 - hosts: all
-  gather_facts: true
- 
+
   tasks:
-  - name: Ansible Gather Facts - Get Time
-    ansible.builtin.debug:
-      var: ansible_date_time
- 
-  - name: Ansible Gather Facts - Get Service
-    ansible.windows.win_service_info:
-      name: wuauserv
-    register: wu_info
- 
-  - name: 1 - Start Windows Update Service if it is Stopped
-    ansible.windows.win_service:
-      name: "wuauserv"
-      state: started
-      force_dependent_services: true
-      failure_actions:
-        - type: restart
-        - type: run_command
-          delay_ms: 1800
-        - type: none
-      failure_command: powershell.exe -command "Stop-Process (Get-WMIObject win32_service | where {$_.name -eq 'wuauserv'}).processID -Verb RunAs -Force"
-    when: wu_info.services.0.state != "started"
- 
-  - name: 2 - Search windows updates and download them
+  - name: Search windows updates and download them
     ansible.windows.win_updates:
       state: downloaded
- 
-  - name: 3 - Prepare log file in temp folder
-    ansible.windows.win_file:
-      path: "C:\\Temp\\update_log{{ ansible_date_time.iso8601_basic_short }}.txt"
-      state: touch
- 
-  - name: 4 - Install all security, critical, and rollup updates, and reboot if needed
+
+  - name: Install all security, critical, and rollup updates, and reboot if needed
     ansible.windows.win_updates:
       category_names:
         - SecurityUpdates
@@ -42,21 +14,9 @@
         - UpdateRollups
       skip_optional: yes
       log_path: "C:\\Temp\\update_log{{ ansible_date_time.iso8601_basic_short }}.txt"
-      #server_selection: managed_server
+      # default is windows update server, uncomment to change to managed update server
+      # server_selection: managed_server
       # true if we want to restart
-      reboot: false
+      reboot: true
       reboot_timeout: 3600
-    register: dl_updates
- 
-  - name: Reboot the machine with all defaults
-    ansible.windows.win_reboot:
-      msg: "Rebooting server by Ansible admin in 10 seconds"
-      pre_reboot_delay: 10
-    async: 120
-    poll: 5
-    when: dl_updates.reboot_required
- 
-  - name: 5 - Sanity check for services after restart
-    ansible.windows.win_service:
-      name: "Spooler"
-      state: started
+    register: dl_updates   

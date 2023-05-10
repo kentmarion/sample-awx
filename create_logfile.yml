@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: true
+  
+  tasks:
+  - name: Ansible Gather Facts - Get Time
+    ansible.builtin.debug:
+      var: ansible_date_time
+      
+  - name: Prepare log file in temp folder
+    ansible.windows.win_file:
+      path: "C:\\Temp\\ansible_log{{ ansible_date_time.iso8601_basic_short }}.txt"
+      state: touch
