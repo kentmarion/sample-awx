@@ -1,0 +1,9 @@
+# win_ping.yml
+---
+- hosts: all
+  tasks:
+
+    - name: Sample Ping
+      win_ping:
+
+...
