@@ -4,7 +4,7 @@
   tasks:
   - name: Ansible Gather Facts - Get Service
     ansible.windows.win_service_info:
-      name: {{service_name}}
+      name: "{{service_name}}"
     register: wu_info
 
   - name: Start Service if Stopped
