@@ -2,10 +2,6 @@
 - hosts: all
 
   tasks:
-  - name: Search windows updates and download them
-    ansible.windows.win_updates:
-      state: downloaded
-
   - name: Install all security, critical, and rollup updates, and reboot if needed
     ansible.windows.win_updates:
       category_names:
