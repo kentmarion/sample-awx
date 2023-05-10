@@ -28,7 +28,6 @@
   - name: 2 - Search windows updates and download them
     ansible.windows.win_updates:
       state: downloaded
-    timeout: 3600
  
   - name: 3 - Prepare log file in temp folder
     ansible.windows.win_file:
