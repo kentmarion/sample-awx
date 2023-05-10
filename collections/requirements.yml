@@ -2,3 +2,4 @@
 collections:
   # Install a collection from Ansible Galaxy.
   - name: ansible.windows
+  - name: community.windows
