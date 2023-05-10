@@ -1,0 +1,8 @@
+---
+- hosts: all
+
+  tasks:
+  - name: Reboot the machine with all defaults
+    ansible.windows.win_reboot:
+      msg: "Rebooting server by Ansible admin in 3 seconds"
+      pre_reboot_delay: 3
