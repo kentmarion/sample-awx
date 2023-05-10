@@ -2,4 +2,3 @@
 collections:
   # Install a collection from Ansible Galaxy.
   - name: ansible.windows
-  - name: ansible.windows.win_service_info
